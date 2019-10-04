@@ -29,11 +29,16 @@ function isRightClick (e) {
   return false
 }
 
+function pointsDistance(a, b) {
+  return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+}
+
 export default class MouseBackend {
-  constructor(manager) {
+  constructor(manager, dragThreshold) {
     this.actions = manager.getActions()
     this.monitor = manager.getMonitor()
     this.registry = manager.getRegistry()
+    this.dragThreshold = dragThreshold
 
     this.sourceNodes = {}
     this.sourceNodesOptions = {}
@@ -157,6 +162,12 @@ export default class MouseBackend {
       this.mouseClientOffset.x !== clientOffset.x ||
       this.mouseClientOffset.y !== clientOffset.y
     )) {
+      const dist = pointsDistance(this.mouseClientOffset, clientOffset)
+
+      if (dist < this.dragThreshold) {
+        return
+      }
+
       this.moveStartSourceIds = null
       this.actions.beginDrag(moveStartSourceIds, {
         clientOffset: this.mouseClientOffset,

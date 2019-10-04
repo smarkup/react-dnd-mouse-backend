@@ -1,5 +1,6 @@
 import MouseBackend from './MouseBackend'
 
-const createMouseBackend = (manager) => new MouseBackend(manager)
+const createMouseBackend = (dragThreshold) => (manager) =>
+  new MouseBackend(manager, dragThreshold)
 
 export default createMouseBackend
